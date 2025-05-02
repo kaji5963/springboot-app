@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ public class LoginController {
 	/** ログイン画面 Service */
 	private final LoginService service;
 
+	/** ログイン画面 Service */
+	private final PasswordEncoder passwordEncoder;
+	
 	/**
 	 * 初期表示
 	 * 
@@ -46,12 +50,15 @@ public class LoginController {
 	 */
 	@PostMapping("/login")
 	public String login(Model model, LoginForm form) {
+		// ログインIDでユーザー情報を検索
 		Optional<UserInfo> userInfo = service.SearchUserById(form.getLoginId());
 		
-		// DBのユーザー情報とformの入力情報を照合
-		// TODO パスワードはハッシュ化したものを使用する
+		// formから入力されたパスワード
+		String formPassword = form.getPassword();
+		
+		// ハッシュ化されたDBのパスワードとformのパスワードを照合
 		boolean isCorrectUserAuth = userInfo.isPresent() 
-				&& form.getPassword().equals(userInfo.get().getPassword());
+				&& passwordEncoder.matches(formPassword, userInfo.get().getPassword());
 		
 		if (isCorrectUserAuth) {
 			return "redirect:/menu";
