@@ -25,7 +25,7 @@ public class LoginController {
 				&& form.getPassword().equals(PASSWORD);
 		
 		if (isCorrectUserAuth) {
-			return "redirect:/menu";
+			return "rediret:/menu";
 		} else {
 			model.addAttribute("errorMsg", "ログインIDとパスワードの組み合わせが間違っています");
 			return "login";
