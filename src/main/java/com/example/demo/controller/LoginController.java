@@ -29,7 +29,7 @@ public class LoginController {
 	/** ログイン画面 Service */
 	private final LoginService service;
 
-	/** ログイン画面 Service */
+	/** PasswordEncoder */
 	private final PasswordEncoder passwordEncoder;
 	
 	/** メッセージソース */

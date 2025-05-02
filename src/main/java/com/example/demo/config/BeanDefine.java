@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,5 +29,18 @@ public class BeanDefine {
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	  /**
+     * DozerマッパーのBean定義
+     * 
+     * SignupForm → UserInfo などのDTOとEntity間のオブジェクト変換を行うために使用
+     * SpringのDIコンテナに登録することで、Serviceなどで@Autowiredや@RequiredArgsConstructorで利用可能
+     *
+     * @return Dozer用のMapperインスタンス
+     */
+	@Bean
+	Mapper mapper() {
+		return new DozerBeanMapper();
 	}
 }

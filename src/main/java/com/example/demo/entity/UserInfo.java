@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import org.dozer.Mapping;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,9 +21,9 @@ public class UserInfo {
 	/** ログインID */
 	@Id
 	@Column(name = "login_id")
+	@Mapping("loginId") //Dozerマッピング用
 	private String loginId;
 
-	/** パスワード */
+	/** パスワード */ // Dozerマッピング除外
 	private String password;
-
 }
