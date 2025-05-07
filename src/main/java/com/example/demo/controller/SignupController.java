@@ -54,9 +54,9 @@ public class SignupController {
 	public void signup(Model model, SignupForm form) {
 		Optional<UserInfo> userInfoOpt = service.registerUserInfo(form);
 		
-		var signupMessage = judgeMessageKey(userInfoOpt);
+		SignupMessage signupMessage = judgeMessageKey(userInfoOpt);
 
-		var messageId = AppUtil.getMessage(messageSource, signupMessage.getMessageId());
+		String messageId = AppUtil.getMessage(messageSource, signupMessage.getMessageId());
 
 		model.addAttribute("message", messageId);
 		
@@ -71,10 +71,6 @@ public class SignupController {
 	 * @return メッセージキー
 	 */
 	private SignupMessage judgeMessageKey(Optional<UserInfo> userInfoOpt) {
-		if (userInfoOpt.isEmpty()) {
-			return SignupMessage.EXISTED_LOGIN_ID;
-		} else {
-			return SignupMessage.SUCCEED;
-		}
+	    return userInfoOpt.isEmpty() ? SignupMessage.EXISTED_LOGIN_ID : SignupMessage.SUCCEED;
 	}
 }
