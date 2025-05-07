@@ -2,27 +2,33 @@
 <html xmlns="http://www.thymeleaf.org">
 
 <head>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
 	<meta charset="UTF-8">
 	<title>ログイン画面</title>
 </head>
 
 <body>
-	<h2>ログイン画面</h2>
-	<span th:text="${errorMsg}"></span>
-	<form th:action="@{/login}" method="post" th:object="${loginForm}">
-		<div>
-			<label>ログインID</label>
-			<input type="text" th:field="*{loginId}">
-		</div>
-		<div>
-			<label>パスワード</label>
-			<input type="password" th:field="*{password}">
-		</div>
-				<div>
-			<input type="submit" value="ログイン">
-		</div>
-	</form>
-	<a th:href="@{/signup}">ユーザー登録</a>
+	<div class="container-fluid">
+		<h2>ログイン画面</h2>
+		<span th:text="${errorMsg}"></span>
+		<form th:action="@{/login}" method="post" th:object="${loginForm}">
+			<div class="form-group">
+				<div class="col-1">
+					<p><label for="loginId">ログインID：</label>
+					<input class="form-control" type="text" th:field="*{loginId}">
+				</div>
+				<div class="col-1 mt-3">
+					<p><label for="password">パスワード：</label>
+					<input class="form-control" type="password" th:field="*{password}">
+				</div>
+			</div>
+			<div>
+				<input class="btn btn-primary mb-3" type="submit" value="ログイン">
+			</div>
+		</form>
+		<a th:href="@{/signup}">▶︎ユーザー登録はコチラ</a>
+	</div>
 </body>
 
 </html>
