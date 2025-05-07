@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.demo.constant.ErrorMessageConst;
+import com.example.demo.constant.MessageConst;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.form.LoginForm;
 import com.example.demo.service.LoginService;
@@ -70,7 +70,7 @@ public class LoginController {
 			return "redirect:/menu";
 		} else {
 			// キーでエラーメッセージを取得
-			String errorMsg = AppUtil.getMessage(messageSource, ErrorMessageConst.LOGIN_WRONG_INPUT);
+			String errorMsg = AppUtil.getMessage(messageSource, MessageConst.LOGIN_WRONG_INPUT);
 			
 			model.addAttribute("errorMsg", errorMsg);
 			return "login";

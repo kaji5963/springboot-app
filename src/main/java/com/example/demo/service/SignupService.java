@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Optional;
+
 import org.dozer.Mapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,9 +34,15 @@ public class SignupService {
 	 * ユーザー情報テーブル 新規登録
 	 * 
 	 * @param form 入力情報
-	 * @return 登録情報(ユーザー情報 Entity)
+	 * @return 登録情報(ユーザー情報 Entity)、既に同じユーザーHIFTみたいですねが登録されていた場合Empty
 	 */
-	public UserInfo registerUserInfo(SignupForm form) {
+	public Optional<UserInfo> registerUserInfo(SignupForm form) {
+		Optional<UserInfo> userInfoExistedOpt = repository.findById(form.getLoginId());
+		
+		// DBに既にデータが存在していた場合に処理終了
+		if (userInfoExistedOpt.isPresent()) {
+			return Optional.empty();
+		} 
 		// SignupFormの各フィールドをUserInfoへ自動でマッピング（DozerによるBean変換）
 		// passwordフィールドはUserInfoクラスにて除外
 		UserInfo userInfo = mapper.map(form, UserInfo.class);
@@ -46,6 +54,6 @@ public class SignupService {
 		userInfo.setPassword(endodedPassword);
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
-		return  repository.save(userInfo);
+		return  Optional.of(repository.save(userInfo));
 	}
 }
