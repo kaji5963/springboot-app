@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>トップメニュー</title>
+	<meta charset="UTF-8">
+	<title>トップメニュー</title>
 </head>
+
 <body>
-トップメニュー画面になります
+	トップメニュー画面になります
+	<p></p><a th:href="@{/login}">▶ログイン画面はコチラ</a></p>
+	<a th:href="@{/signup}">▶︎ユーザー登録はコチラ</a>
 </body>
+
 </html>
