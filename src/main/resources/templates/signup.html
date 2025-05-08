@@ -25,10 +25,12 @@
 					<p><label for="loginId">ログインID</label>
 						<input class="form-control" type="text" th:field="*{loginId}">
 				</div>
+				<span class="text-danger" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}"></span>
 				<div class="col-3 col-md-2 col-xxl-1">
 					<p><label for="password">パスワード</label>
 						<input class="form-control" type="password" th:field="*{password}">
 				</div>
+				<span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 				<div>
 					<input class="btn btn-primary mb-3" type="submit" value="ユーザー登録">
 				</div>
