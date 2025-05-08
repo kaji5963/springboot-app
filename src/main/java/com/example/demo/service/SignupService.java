@@ -6,6 +6,7 @@ import org.dozer.Mapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.constant.AuthorityKind;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.form.SignupForm;
 import com.example.demo.repository.UserInfoRepository;
@@ -52,6 +53,9 @@ public class SignupService {
 		
 		// ハッシュ化されたパスワードをuserInfoインスタンスへset
 		userInfo.setPassword(endodedPassword);
+		
+		// 権限情報を格納(権限レベル低)
+		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER.getAuthorityKind());
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
 		return  Optional.of(repository.save(userInfo));
