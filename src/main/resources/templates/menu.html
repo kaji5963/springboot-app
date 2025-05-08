@@ -7,6 +7,8 @@
 </head>
 
 <body>
+	<div th:insert="common/sourceList::sourceList"></div>
+	<div th:replace="common/header::header"></div>
 	トップメニュー画面になります
 	<p></p><a th:href="@{/login}">▶ログイン画面はコチラ</a></p>
 	<a th:href="@{/signup}">▶︎ユーザー登録はコチラ</a>
