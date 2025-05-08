@@ -4,6 +4,8 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * アプリケーション共通のBean定義クラス
@@ -24,10 +26,10 @@ public class BeanDefine {
      * 
      * @return BCryptPasswordEncoderのインスタンス
      */
-//	@Bean
-//	PasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 	
 	  /**
      * DozerマッパーのBean定義
