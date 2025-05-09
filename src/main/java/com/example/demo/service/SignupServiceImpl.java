@@ -53,7 +53,7 @@ public class SignupServiceImpl implements SignupService {
 		userInfo.setPassword(endodedPassword);
 		
 		// 権限情報を格納(権限レベル低)
-		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER.getAuthorityKind());
+		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER.getCode());
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
 		return  Optional.of(repository.save(userInfo));

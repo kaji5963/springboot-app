@@ -29,7 +29,7 @@ public class MenuController {
 		// 認証されたユーザー情報がどの権限かを比較（全権限以外であればfalse）
 		boolean hasUserManageAuth = user.getAuthorities().stream()
 				.allMatch(authority -> authority.getAuthority()
-						.equals(AuthorityKind.ITEM_AND_USER_MANAGER.getAuthorityKind()));
+						.equals(AuthorityKind.ITEM_AND_USER_MANAGER.getCode()));
 
 		model.addAttribute("hasUserManageAuth", hasUserManageAuth);
 

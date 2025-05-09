@@ -3,7 +3,7 @@ package com.example.demo.form;
 import lombok.Data;
 
 /**
- * ログイン画面 form
+ * ログイン画面 Formクラス
  * 
  * @author kajiwara_takuya
  */
