@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,7 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.example.demo.constant.AuthorityKind;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.UserStatusKind;
+import com.example.demo.dto.UserListInfo;
 import com.example.demo.form.UserListForm;
+import com.example.demo.service.UserListService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * ユーザー一覧画面Controllerクラス
@@ -15,8 +21,15 @@ import com.example.demo.form.UserListForm;
  * @author kajiwara_takuya
  */
 @Controller
+@RequiredArgsConstructor
 public class UserListController {
 	
+	/** ユーザー一覧画面Serviceクラス */
+	private final UserListService service;
+	
+	/** モデルキー：ユーザー情報リスト */
+	private static final String KEY_USERLIST = "userList";
+
 	/** モデルキー：ユーザー情報リスト */
 	private static final String KEY_YSER_STATUS_KINDS = "userStatusKinds";
 	
@@ -34,6 +47,9 @@ public class UserListController {
 	 */
 	@GetMapping(UrlConst.USER_LIST)
 	public String view(Model model, UserListForm form) {
+		List<UserListInfo> userInfos = service.editUserList();
+		model.addAttribute(KEY_USERLIST, userInfos);
+
 		model.addAttribute(KEY_YSER_STATUS_KINDS, UserStatusKind.values());
 		model.addAttribute(KEY_AUTHORITY_KINDS, AuthorityKind.values());
 

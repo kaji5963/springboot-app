@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import java.util.Optional;
 
-import org.dozer.Mapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +9,7 @@ import com.example.demo.constant.AuthorityKind;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.form.SignupForm;
 import com.example.demo.repository.UserInfoRepository;
+import com.github.dozermapper.core.Mapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,7 +53,7 @@ public class SignupServiceImpl implements SignupService {
 		userInfo.setPassword(endodedPassword);
 		
 		// 権限情報を格納(権限レベル低)
-		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER.getCode());
+		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER);
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
 		return  Optional.of(repository.save(userInfo));

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * ユーザー状態手べつ
+ * ユーザー状態種別
  * 
  * @author kajiwara_takuya
  */
