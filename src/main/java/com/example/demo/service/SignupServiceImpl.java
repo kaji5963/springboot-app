@@ -55,10 +55,10 @@ public class SignupServiceImpl implements SignupService {
 		userInfo.setPassword(endodedPassword);
 		
 		// ステータスを格納
-		userInfo.setStatus(UserStatusKind.ENABLED);
+		userInfo.setUserStatusKind(UserStatusKind.ENABLED);
 		
 		// 権限情報を格納(権限レベル低)
-		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER);
+		userInfo.setAuthorityKind(AuthorityKind.ITEM_WATCHER);
 		
 		// 登録日時・最終更新日時を格納
 		userInfo.setCreateTime(LocalDateTime.now());

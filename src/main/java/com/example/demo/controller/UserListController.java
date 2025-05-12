@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.constant.AuthorityKind;
 import com.example.demo.constant.UrlConst;
@@ -31,10 +32,10 @@ public class UserListController {
 	private static final String KEY_USERLIST = "userList";
 
 	/** モデルキー：ユーザー情報リスト */
-	private static final String KEY_YSER_STATUS_KINDS = "userStatusKinds";
+	private static final String KEY_USER_STATUS_KIND_OPTIONS = "userStatusKindOptions";
 	
 	/** モデルキー：ユーザー情報リスト */
-	private static final String KEY_AUTHORITY_KINDS = "authorityKinds";
+	private static final String KEY_AUTHORITY_KIND_OPTIONS = "authorityKindOptions";
 	
 	/**
 	 * 画面の初期表示を行います。
@@ -48,10 +49,28 @@ public class UserListController {
 	@GetMapping(UrlConst.USER_LIST)
 	public String view(Model model, UserListForm form) {
 		List<UserListInfo> userInfos = service.editUserList();
+		
 		model.addAttribute(KEY_USERLIST, userInfos);
+		model.addAttribute(KEY_USER_STATUS_KIND_OPTIONS, UserStatusKind.values());
+		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());
 
-		model.addAttribute(KEY_YSER_STATUS_KINDS, UserStatusKind.values());
-		model.addAttribute(KEY_AUTHORITY_KINDS, AuthorityKind.values());
+		return "userList";
+	}
+	
+	/**
+	 * ユーザー情報検索
+	 * 
+	 * @param model モデル
+	 * @param form フォーム情報
+	 * @return 表示画面
+	 */
+	@PostMapping(UrlConst.USER_LIST)
+	public String searchUser(Model model, UserListForm form) {
+		var userInfos = service.editUserListByParam(form);
+		
+		model.addAttribute(KEY_USERLIST, userInfos);
+		model.addAttribute(KEY_USER_STATUS_KIND_OPTIONS, UserStatusKind.values());
+		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());
 
 		return "userList";
 	}
