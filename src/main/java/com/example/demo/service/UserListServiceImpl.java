@@ -2,14 +2,16 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.constant.AuthorityKind;
+import com.example.demo.constant.ExecuteResult;
 import com.example.demo.constant.UserStatusKind;
 import com.example.demo.dto.UserListInfo;
+import com.example.demo.dto.UserSearchInfo;
 import com.example.demo.entity.UserInfo;
-import com.example.demo.form.UserListForm;
 import com.example.demo.repository.UserInfoRepository;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
@@ -43,28 +45,37 @@ public class UserListServiceImpl implements UserListService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public List<UserListInfo> editUserListByParam(UserListForm form) {
-		UserInfo userInfo = mapper.map(form, UserInfo.class);
-
-		return toUserListInfos(findUserInfoByParam(userInfo));
+	public List<UserListInfo> editUserListByParam(UserSearchInfo dto) {
+		return toUserListInfos(findUserInfoByParam(dto));
+	}
+	
+	public ExecuteResult deleteUserInfoById(String loginId) {
+		Optional<UserInfo> userInfo = repository.findById(loginId);
+		
+		if (userInfo.isEmpty()) {
+			return ExecuteResult.ERROR;
+		}
+		
+		repository.deleteById(loginId);
+		
+		return ExecuteResult.SUCCEED;
 	}
 
 	/**
-	 * ユーザー情報取得(条件付き)
-	 * ユーザー情報を条件検索する
+	 * ユーザー情報の条件検索を行い、検索結果を返却します。
 	 * 
-	 * @param userInfo ユーザー情報（元データはform情報）
+	 * @param dto 検索情報DTO
 	 * @return 検索結果
 	 */
-	public List<UserInfo> findUserInfoByParam(UserInfo userInfo) {
+	public List<UserInfo> findUserInfoByParam(UserSearchInfo dto) {
 		// %ログインID%を変数へ格納
-		String loginIdParam = AppUtil.addWildCard(userInfo.getLoginId());
+		String loginIdParam = AppUtil.addWildCard(dto.getLoginId());
 
 		// ユーザー状態種別
-		UserStatusKind userStatusKind = userInfo.getUserStatusKind();
+		UserStatusKind userStatusKind = dto.getUserStatusKind();
 
 		// 利用権限
-		AuthorityKind authorityKind = userInfo.getAuthorityKind();
+		AuthorityKind authorityKind = dto.getAuthorityKind();
 		
 		if (userStatusKind != null && authorityKind != null) {
 	        return repository.findByLoginIdLikeAndUserStatusKindAndAuthorityKind(

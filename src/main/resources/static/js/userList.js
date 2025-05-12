@@ -15,6 +15,10 @@ $(function() {
 		// ログインID一時保管
 		editSelectedLoginId($(this));
 	});
+
+	$("#deleteOkBtn").click(function() {
+		$('#deleteBtn').trigger('click');
+	});
 });
 
 /**
@@ -25,7 +29,7 @@ $(function() {
 function editSelectedLoginId(row) {
 	row.find('td').each(function() {
 		const columnId = $(this).attr('id');
-		
+
 		if (columnId.startsWith('loginId_')) {
 			$('#selectedLoginId').val($(this).text());
 			return false;

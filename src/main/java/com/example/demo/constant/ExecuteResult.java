@@ -1,0 +1,23 @@
+package com.example.demo.constant;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * 処理結果種別
+ * 
+ * @author kajiwara_takuya
+ */
+@Getter
+@AllArgsConstructor
+public enum ExecuteResult {
+
+	/* エラーなし **/
+	SUCCEED(MessageConst.USERLIST_DELETE_SUCCEED),
+	
+	/* エラーあり **/
+	ERROR(MessageConst.USERLIST_NON_EXISTED_LOGIN_ID);
+	
+	/* メッセージID **/
+	private String messageId;
+}
