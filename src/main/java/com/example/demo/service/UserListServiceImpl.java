@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.constant.AuthorityKind;
-import com.example.demo.constant.ExecuteResult;
-import com.example.demo.constant.UserStatusKind;
+import com.example.demo.constant.UserDeleteResult;
+import com.example.demo.constant.db.AuthorityKind;
+import com.example.demo.constant.db.UserStatusKind;
 import com.example.demo.dto.UserListInfo;
 import com.example.demo.dto.UserSearchInfo;
 import com.example.demo.entity.UserInfo;
@@ -49,16 +49,16 @@ public class UserListServiceImpl implements UserListService {
 		return toUserListInfos(findUserInfoByParam(dto));
 	}
 	
-	public ExecuteResult deleteUserInfoById(String loginId) {
+	public UserDeleteResult deleteUserInfoById(String loginId) {
 		Optional<UserInfo> userInfo = repository.findById(loginId);
 		
 		if (userInfo.isEmpty()) {
-			return ExecuteResult.ERROR;
+			return UserDeleteResult.ERROR;
 		}
 		
 		repository.deleteById(loginId);
 		
-		return ExecuteResult.SUCCEED;
+		return UserDeleteResult.SUCCEED;
 	}
 
 	/**
