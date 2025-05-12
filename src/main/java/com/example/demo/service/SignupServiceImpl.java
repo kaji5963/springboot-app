@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.constant.AuthorityKind;
+import com.example.demo.constant.UserStatusKind;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.form.SignupForm;
 import com.example.demo.repository.UserInfoRepository;
@@ -52,8 +54,15 @@ public class SignupServiceImpl implements SignupService {
 		// ハッシュ化されたパスワードをuserInfoインスタンスへset
 		userInfo.setPassword(endodedPassword);
 		
+		// ステータスを格納
+		userInfo.setStatus(UserStatusKind.ENABLED);
+		
 		// 権限情報を格納(権限レベル低)
 		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER);
+		
+		// 登録日時・最終更新日時を登録
+		userInfo.setCreateTime(LocalDateTime.now());
+		userInfo.setUpdateTime(LocalDateTime.now());
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
 		return  Optional.of(repository.save(userInfo));
