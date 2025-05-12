@@ -58,6 +58,10 @@ public class UserInfo {
 	/** 最終更新日時 */
 	@Column(name = "update_time")
 	private LocalDateTime updateTime;
+	
+	/** 最終更新ユーザー */
+	@Column(name = "update_user")
+	private String updateUser;
 
 	public UserInfo() {
 	}
@@ -68,7 +72,7 @@ public class UserInfo {
 	 * @return ログイン失敗回数がインクリメントされたUserInfo
 	 */
 	public UserInfo incrementLoginFailureCount() {
-		return new UserInfo(loginId, password, ++loginFailureCount, accountLockedTime, status, authority, createTime, updateTime);
+		return new UserInfo(loginId, password, ++loginFailureCount, accountLockedTime, status, authority, createTime, updateTime, updateUser);
 	}
 
 	/**
@@ -77,7 +81,7 @@ public class UserInfo {
 	 * @return ログイン失敗情報がリセットされたUserInfo
 	 */
 	public UserInfo resetLoginFailureInfo() {
-		return new UserInfo(loginId, password, 0, null, status, authority, createTime, updateTime);
+		return new UserInfo(loginId, password, 0, null, status, authority, createTime, updateTime, updateUser);
 	}
 
 	/**
@@ -86,6 +90,6 @@ public class UserInfo {
 	 * @return ログイン失敗階位数、アカウントロック日時が更新されたUserInfo
 	 */
 	public UserInfo updateAccountLocked() {
-		return new UserInfo(loginId, password, 0, LocalDateTime.now(), status, authority, createTime, updateTime);
+		return new UserInfo(loginId, password, 0, LocalDateTime.now(), status, authority, createTime, updateTime, updateUser);
 	}
 }

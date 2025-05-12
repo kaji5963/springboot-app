@@ -60,9 +60,12 @@ public class SignupServiceImpl implements SignupService {
 		// 権限情報を格納(権限レベル低)
 		userInfo.setAuthority(AuthorityKind.ITEM_WATCHER);
 		
-		// 登録日時・最終更新日時を登録
+		// 登録日時・最終更新日時を格納
 		userInfo.setCreateTime(LocalDateTime.now());
 		userInfo.setUpdateTime(LocalDateTime.now());
+		
+		// 最終更新ユーザーを格納
+		userInfo.setUpdateUser(form.getLoginId());
 		
 		// saveメソッドで格納されたuserInfo情報をDBへ登録
 		return  Optional.of(repository.save(userInfo));
