@@ -8,8 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.demo.constant.UserDeleteResult;
+import com.example.demo.constant.SessionKeyConst;
 import com.example.demo.constant.UrlConst;
+import com.example.demo.constant.UserDeleteResult;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.constant.db.AuthorityKind;
 import com.example.demo.constant.db.UserStatusKind;
@@ -20,6 +21,7 @@ import com.example.demo.service.UserListService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -30,6 +32,9 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class UserListController {
+	
+	/** セッション情報 */
+	private final HttpSession session;
 	
 	/** ユーザー一覧画面Serviceクラス */
 	private final UserListService service;
@@ -60,6 +65,9 @@ public class UserListController {
 	 */
 	@GetMapping(UrlConst.USER_LIST)
 	public String view(Model model, UserListForm form) {
+		// セッション情報を削除
+		session.removeAttribute(SessionKeyConst.SELECTED_LOGIN_ID);
+		
 		List<UserListInfo> userInfos = service.editUserList();
 		
 		model.addAttribute(KEY_USERLIST, userInfos);
@@ -89,6 +97,19 @@ public class UserListController {
 		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());
 
 		return ViewNameConst.USER_LIST;
+	}
+	
+	/**
+	 * 選択業の情報を編集して、最新情報で画面を再表示します。
+	 * 
+	 * @param form 入力情報
+	 * @return 表示画面
+	 */
+	@PostMapping(value = UrlConst.USER_LIST, params = "edit")
+	public String updateUser(UserListForm form) {
+		session.setAttribute(SessionKeyConst.SELECTED_LOGIN_ID, form.getSelectedLoginId());
+		
+		return AppUtil.doRedirect(UrlConst.USER_EDIT);
 	}
 	
 	/**
