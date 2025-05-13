@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>ユーザー登録画面</title>
 	<meta charset="UTF-8">
+	<title>ユーザー登録画面</title>
 </head>
 
 <body>
-	<div th:insert="common/sourceList::sourceList"></div>
-	<div th:replace="common/messageIcon::messageIcon"></div>
+	<div th:insert="~{common/sourceList :: sourceList}"></div>
+	<div th:replace="~{common/messageIcon :: messageIcon}"></div>
 	<div class="container-fluid">
 		<h2>ユーザー登録画面</h2>
 		<div class="alert d-flex align-items-center" th:classappend="|${isError ? 'alert-danger' : 'alert-primary'}|"
@@ -21,19 +21,22 @@
 		</div>
 		<form th:action="@{/signup}" method="post" th:object="${signupForm}">
 			<div class="form-group">
-				<div class="col-3 col-md-2 col-xxl-1">
-					<p><label for="loginId">ログインID</label>
-						<input class="form-control" type="text" th:field="*{loginId}">
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="loginId">ログインID：</label>
+						<input type="text" class="form-control" th:field="*{loginId}">
+						<span class="text-danger" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}"></span>
 				</div>
-				<span class="text-danger" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}"></span>
-				<div class="col-3 col-md-2 col-xxl-1">
-					<p><label for="password">パスワード</label>
-						<input class="form-control" type="password" th:field="*{password}">
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="password">パスワード：</label>
+						<input type="password" class="form-control" th:field="*{password}">
+						<span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
 				</div>
-				<span class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-				<div>
-					<input class="btn btn-primary mb-3" type="submit" value="ユーザー登録">
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="mailAddress">メールアドレス：</label>
+						<input type="text" class="form-control" th:field="*{mailAddress}">
+						<span class="text-danger" th:if="${#fields.hasErrors('mailAddress')}" th:errors="*{mailAddress}"></span>
 				</div>
+				<p><input type="submit" class="btn btn-primary" value="ユーザー登録">
 			</div>
 		</form>
 		<a th:href="@{/login}">▶ログイン画面へ戻る</a>
