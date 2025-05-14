@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.Optional;
-
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,16 +7,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.constant.MessageConst;
-import com.example.demo.constant.SignupMessage;
+import com.example.demo.constant.SessionKeyConst;
+import com.example.demo.constant.SignupResult;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
-import com.example.demo.entity.UserInfo;
+import com.example.demo.dto.SignupInfo;
 import com.example.demo.form.SignupForm;
 import com.example.demo.service.SignupService;
 import com.example.demo.util.AppUtil;
+import com.github.dozermapper.core.Mapper;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -35,6 +37,15 @@ public class SignupController {
 
 	/** メッセージソース */
 	private final MessageSource messageSource;
+	
+	/** オブジェクト間項目輸送クラス */
+	private final Mapper mapper;
+	
+	/** セッションオブジェクト */
+	private final HttpSession session;
+	
+	/** 画面で使用するフォームクラス名 */
+	private final String FORM_CLASS_NAME = "signupForm";
 
 	/**
 	 * 初期表示
@@ -45,55 +56,68 @@ public class SignupController {
 	 */
 	@GetMapping(UrlConst.SIGNUP)
 	public String view(Model model, SignupForm form) {
+		// 初期表示なのか、リダイレクト後の表示なのかを判定(初期表示の場合true)
+		boolean isInitialDisp = !model.containsAttribute(FORM_CLASS_NAME);
+		
+		// 初期表示処理の場合フォームの情報を格納
+		if (isInitialDisp) {
+			model.addAttribute(FORM_CLASS_NAME, new SignupForm());
+		}
+		
 		return ViewNameConst.SIGNUP;
 	}
 
 	/**
-	 * ユーザー登録
+	 * 画面の入力情報からユーザー登録処理を呼び出します。
 	 * 
-	 * @param model モデル
 	 * @param form 入力情報
+	 * @param bdResult 入力情報の単項目チェック結果
+	 * @param redirectAttributes リダイレクト用モデル
 	 * @return 表示画面
 	 */
 	@PostMapping(UrlConst.SIGNUP)
-	public void signup(Model model, @Validated SignupForm form, BindingResult bdResult) {
+	public String signup(@Validated SignupForm form, BindingResult bdResult, RedirectAttributes redirectAttributes) {
 		// バリデーションチェック
 		if (bdResult.hasErrors()) {
-			editGuideMessage(model, MessageConst.FORM_ERROR, true);
-			return;
+			// プロパティファイルからメッセージを取得
+			editGuideMessage(form, bdResult, MessageConst.FORM_ERROR, redirectAttributes);
+			return AppUtil.doRedirect(UrlConst.SIGNUP);
 		}
 		
 		// form情報からユーザー情報を取得
-		Optional<UserInfo> userInfoOpt = service.registerUserInfo(form);
+		SignupResult signupResult = service.signup(mapper.map(form, SignupInfo.class));
 		
-		// 画面表示するメッセージを取得
-		SignupMessage signupMessage = judgeMessageKey(userInfoOpt);
+		// 送信処理がエラーかどうか
+		boolean isError = signupResult != SignupResult.SUCCEED;
 		
-		editGuideMessage(model, signupMessage.getMessageId(), signupMessage.isError());
+		// エラーの場合の処理判定
+		if (isError) {
+			editGuideMessage(form, bdResult, signupResult.getMessageId(), redirectAttributes);
+			return AppUtil.doRedirect(UrlConst.SIGNUP);
+		}
+		
+		// ワンタイムパスワードで認証するログインIDをセッションへ格納
+		session.setAttribute(SessionKeyConst.ONE_TIME_AUTH_LOGIN_ID, form.getLoginId());
+		
+		return AppUtil.doRedirect(UrlConst.SIGNUP_CONFIRM);
 	}
 	
 	/**
-	 * 画面に表示するガイドメッセージを設定する
+	 * メッセージIDを使ってプロパティファイルからメッセージを取得し、画面に表示します。
 	 * 
-	 * @param model モデル
-	 * @param messageId メッセージID
-	 * @param isError エラー有無
-	 */
-	private void editGuideMessage(Model model, String messageId, boolean isError) {
-		String message = AppUtil.getMessage(messageSource, messageId);
-		
-		// viewへ渡す情報を定義
-		model.addAttribute("message", message);
-		model.addAttribute("isError", isError);
-	}
-
-	/**
-	 * ユーザー登録情報の結果メッセージキーを判断する
+	 * <p>また、画面でメッセージを表示する際に通常メッセージとエラーメッセージとで色分けをするため、<br>
+	 * その判定に必要な情報も画面に渡します。
 	 * 
-	 * @param userInfoOpt ユーザー登録結果（登録済みだった場合はEmpty）
-	 * @return メッセージキー
+	 * @param form 入力情報
+	 * @param bdResult 入力内容の単項目チェック結果
+	 * @param messageId プロパティファイルから取得したいメッセージのID
+	 * @param redirectAttributes リダイレクト用モデル
 	 */
-	private SignupMessage judgeMessageKey(Optional<UserInfo> userInfoOpt) {
-	    return userInfoOpt.isEmpty() ? SignupMessage.EXISTED_LOGIN_ID : SignupMessage.SUCCEED;
+	private void editGuideMessage(SignupForm form, BindingResult bdResult, String messageId,
+			RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("message", AppUtil.getMessage(messageSource, messageId));
+		redirectAttributes.addFlashAttribute("isError", true);
+		redirectAttributes.addFlashAttribute(form);
+		redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + FORM_CLASS_NAME, bdResult);
 	}
 }

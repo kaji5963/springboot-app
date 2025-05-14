@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
-import java.util.Optional;
-
-import com.example.demo.entity.UserInfo;
-import com.example.demo.form.SignupForm;
+import com.example.demo.constant.SignupResult;
+import com.example.demo.dto.SignupInfo;
 
 /**
  * ユーザー情報画面Serviceインターフェース
@@ -13,10 +11,16 @@ import com.example.demo.form.SignupForm;
 public interface SignupService {
 	
 	/**
-	 * 画面の入力情報を元にユーザー情報テーブルの新規登録を行います。
+	 * 画面の入力情報を元にユーザー情報テーブルの仮登録を行います。
+	 *
+	 * <p>ただし、以下のテーブル項目はこの限りではありません。
+	 * <ul>
+	 * <li>パスワード：画面で入力したパスワードがハッシュ化され登録されます。</li>
+	 * <li>権限：常に「商品情報の確認が可能」のコード値が登録されます。</li>
+	 * </ul>
 	 * 
-	 * @param form 入力情報
-	 * @return 登録情報(ユーザー情報 Entity)、既に同じユーザーIDが登録されていた場合Empty
+	 * @param dto 仮登録用情報
+	 * @return 仮登録情報(ユーザー情報Entity)、既に同じユーザIDで登録がある場合はEmpty
 	 */
-	public Optional<UserInfo> registerUserInfo(SignupForm form);
+	public SignupResult signup(SignupInfo dto);
 }
