@@ -39,6 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	/**
 	 * ユーザー情報生成
+	 * Spring Security 認証
 	 * 
 	 * @param username ログインID
 	 * @throws UsernameNotFoundException
@@ -47,8 +48,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserInfo userInfo = repository.findById(username)
 				.orElseThrow(() -> new UsernameNotFoundException(username));
+		
+		// 本登録完了しているかを判定（仮登録状態なら処理する）
+		if (!userInfo.isSignupCompleted()) {
+			throw new UsernameNotFoundException(username);
+		}
 
 		LocalDateTime accountLockedTime = userInfo.getAccountLockedTime();
+		
 		boolean isAccountLocked = accountLockedTime != null
 				&& accountLockedTime.plusHours(lockingTime).isAfter(LocalDateTime.now());
 
@@ -71,6 +78,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public void handle(AuthenticationFailureBadCredentialsEvent event) {
 		String loginId = event.getAuthentication().getName();
 		repository.findById(loginId).ifPresent(userInfo -> {
+			// 本登録完了しているかを判定（仮登録状態なら処理する）
+			if (!userInfo.isSignupCompleted()) {
+				return;
+			}
 			repository.save(userInfo.incrementLoginFailureCount());
 
 			boolean isReachFailureCount = userInfo.getLoginFailureCount() == lockingBorderCount;
