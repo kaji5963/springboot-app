@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.constant.ModelKey;
 import com.example.demo.constant.SessionKeyConst;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.UserDeleteResult;
@@ -45,6 +47,9 @@ public class UserListController {
 	/** メッセージソース */
 	private final MessageSource messageSource;
 	
+	/** モデルキー：ユーザー情報リストフォーム */
+	private static final String KEY_USERLIST_FORM = "userListForm";
+	
 	/** モデルキー：ユーザー情報リスト */
 	private static final String KEY_USERLIST = "userList";
 
@@ -53,6 +58,9 @@ public class UserListController {
 	
 	/** モデルキー：ユーザー情報リスト */
 	private static final String KEY_AUTHORITY_KIND_OPTIONS = "authorityKindOptions";
+	
+	/** モデルキー：操作種別 */
+	private static final String KEY_OPERATION_KIND = "operationKind";
 	
 	/**
 	 * 画面の初期表示を行います。
@@ -70,11 +78,38 @@ public class UserListController {
 		
 		List<UserListInfo> userInfos = service.editUserList();
 		
-		model.addAttribute(KEY_USERLIST, userInfos);
+		model.addAttribute(KEY_USERLIST, editUserListInfo(model));
 		model.addAttribute(KEY_USER_STATUS_KIND_OPTIONS, UserStatusKind.values());
 		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());
 
 		return ViewNameConst.USER_LIST;
+	}
+	
+	/**
+	 * 初期表示、検索後や削除後のリダイレクトによる再表示のいずれかかを判定して画面に表示する一覧情報を作成します。
+	 * 
+	 * @param model モデル
+	 * @return ユーザー一覧情報
+	 */
+	@SuppressWarnings("unchecked")
+	private List<UserListInfo> editUserListInfo(Model model) {
+		boolean doneSearchOrDelete = model.containsAttribute(KEY_OPERATION_KIND);
+		
+		if (doneSearchOrDelete) {
+			OperationKind operationKind = (OperationKind) model.getAttribute(KEY_OPERATION_KIND);
+			
+			if (operationKind == OperationKind.SEARCH) {
+				return (List<UserListInfo>) model.getAttribute(KEY_USERLIST);
+			}
+			
+			if (operationKind == OperationKind.DELETE) {
+				UserSearchInfo searchDto = mapper.map((UserListForm) model.getAttribute(KEY_USERLIST_FORM), UserSearchInfo.class);
+				
+				return service.editUserListByParam(searchDto);
+			}
+		}
+
+		return service.editUserList();
 	}
 	
 	/**
@@ -82,28 +117,29 @@ public class UserListController {
 	 * 
 	 * @param model モデル
 	 * @param form フォーム情報
-	 * @return 表示画面
+	 * @param redirectAttributes リダイレクト用オブジェクト
+	 * @return リダイレクトURL
 	 */
 	@PostMapping(value = UrlConst.USER_LIST, params = "search")
-	public String searchUser(Model model, UserListForm form) {
+	public String searchUser(Model model, UserListForm form, RedirectAttributes redirectAttributes) {
 		// フォーム入力値を検索用DTO（UserSearchInfo）にマッピング
 		UserSearchInfo searchDto = mapper.map(form, UserSearchInfo.class);
 		
 		// 検索条件に合致したユーザー情報を取得
 		List<UserListInfo> userInfos = service.editUserListByParam(searchDto);
 		
-		model.addAttribute(KEY_USERLIST, userInfos);
-		model.addAttribute(KEY_USER_STATUS_KIND_OPTIONS, UserStatusKind.values());
-		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());
+		redirectAttributes.addFlashAttribute(KEY_USERLIST, userInfos);
+		redirectAttributes.addFlashAttribute(KEY_USERLIST_FORM, form);
+		redirectAttributes.addFlashAttribute(KEY_OPERATION_KIND, OperationKind.SEARCH);
 
-		return ViewNameConst.USER_LIST;
+		return AppUtil.doRedirect(UrlConst.USER_LIST);
 	}
 	
 	/**
 	 * 選択業の情報を編集して、最新情報で画面を再表示します。
 	 * 
 	 * @param form 入力情報
-	 * @return 表示画面
+	 * @return リダイレクトURL
 	 */
 	@PostMapping(value = UrlConst.USER_LIST, params = "edit")
 	public String updateUser(UserListForm form) {
@@ -117,16 +153,30 @@ public class UserListController {
 	 * 
 	 * @param model モデル
 	 * @param form 入力情報
-	 * @return 表示画面
+	 * @poram redirectAttributes リダイレクト用オブジェクト
+	 * @return リダイレクトURL
 	 */
 	@PostMapping(value =UrlConst.USER_LIST, params = "delete")
-	public String deleteUser(Model model, UserListForm form) {
+	public String deleteUser(Model model, UserListForm form, RedirectAttributes redirectAttributes) {
 		UserDeleteResult executeResult =service.deleteUserInfoById(form.getSelectedLoginId());
 		
-		model.addAttribute("isError", executeResult == UserDeleteResult.ERROR);
-		model.addAttribute("message", AppUtil.getMessage(messageSource, executeResult.getMessageId()));
-		
-		// 削除後、フォーム情報の「選択されたログインID」は不要になるためクリアします。
-		return searchUser(model, form.clearSelectedLoginId());
+		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, executeResult == UserDeleteResult.ERROR);
+		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
+				AppUtil.getMessage(messageSource, executeResult.getMessageId()));
+		// 削除後、フォーム情報の「選択されたログインID」は不要になるため、クリアします。
+		redirectAttributes.addFlashAttribute(KEY_USERLIST_FORM, form.clearSelectedLoginId());
+		redirectAttributes.addFlashAttribute(KEY_OPERATION_KIND, OperationKind.DELETE);
+
+		return AppUtil.doRedirect(UrlConst.USER_LIST);
+	}
+	/**
+	 * 操作種別Enum
+	 * 
+	 * @author kajiwara_takuya
+	 */
+	public enum OperationKind {
+		SEARCH, DELETE;
 	}
 }
+
+

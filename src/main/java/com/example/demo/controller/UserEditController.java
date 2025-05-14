@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.constant.MessageConst;
+import com.example.demo.constant.ModelKey;
 import com.example.demo.constant.SessionKeyConst;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.UserEditMessage;
@@ -50,6 +52,9 @@ public class UserEditController {
 
 	/** メッセージソース */
 	private final MessageSource messageSource;
+	
+	/** リダイレクトパラメータ：エラー有 */
+	private static final String REDIRECT_PRAM_ERR = "err";
 
 	/**
 	 * 前画面で選択されたログインIDに紐づくユーザー情報を画面に表示します。
@@ -73,9 +78,24 @@ public class UserEditController {
 		}
 		
 		// 画面表示に必要な共通項目の設定
-		setupCommonInfo(model, userInfoOpt.get());
+		UserInfo userInfo = userInfoOpt.get();
+		model.addAttribute("userEditForm", mapper.map(userInfo, UserEditForm.class));
+		model.addAttribute("userEditInfo", mapper.map(userInfo, UserEditInfo.class));
+		model.addAttribute("userStatusKindOptions", UserStatusKind.values());
+		model.addAttribute("authorityKindOptions", AuthorityKind.values());
 
 		return ViewNameConst.USER_EDIT;
+	}
+	
+	/**
+	 * 画面の更新エラー時にエラーメッセージを表示します。
+	 * 
+	 * @param model モデル
+	 * @return ユーザー編集エラー画面テンプレート名
+	 */
+	@GetMapping(value = UrlConst.USER_EDIT, params = REDIRECT_PRAM_ERR)
+	public String viewWithError(Model model) {
+		return ViewNameConst.USER_EDIT_ERROR;
 	}
 
 	/**
@@ -83,10 +103,12 @@ public class UserEditController {
 	 * 
 	 * @param model モデル
 	 * @param form 入力情報
+	 * @param 認証ユーザー情報
+	 * @param redirectAttributes リダイレクト用オブジェクト
 	 * @return 表示画面
 	 */
 	@PostMapping(value = UrlConst.USER_EDIT, params = "update")
-	public String updateUser(Model model, UserEditForm form, @AuthenticationPrincipal User user) {
+	public String updateUser(Model model, UserEditForm form, @AuthenticationPrincipal User user, RedirectAttributes redirectAttributes) {
 		// DTOクラスにフォームの情報をマッピング
 		UserUpdateInfo updateDto = mapper.map(form, UserUpdateInfo.class);
 		
@@ -104,32 +126,16 @@ public class UserEditController {
 		
 		// 失敗した場合は、エラー画面へ遷移
 		if (updateMessage == UserEditMessage.FAILED) {
-			model.addAttribute("message", AppUtil.getMessage(messageSource, updateMessage.getMessageId()));
-			return ViewNameConst.USER_EDIT_ERROR;
+			redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
+					AppUtil.getMessage(messageSource, updateMessage.getMessageId()));
+			redirectAttributes.addAttribute(REDIRECT_PRAM_ERR, "");
+			return AppUtil.doRedirect(UrlConst.USER_EDIT);
 		}
-		
-		// 更新後のデータを元に画面表示に必要に必要な設定を行う
-		setupCommonInfo(model, updateResult.getUpdateUserInfo());
 
-		model.addAttribute("isError", false);
-		model.addAttribute("message", AppUtil.getMessage(messageSource, updateMessage.getMessageId()));
+		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, false);
+		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
+				AppUtil.getMessage(messageSource, updateMessage.getMessageId()));
 
-		return ViewNameConst.USER_EDIT;
+		return AppUtil.doRedirect(UrlConst.USER_EDIT);
 	}
-
-	/**
-	 * 画面表示に必要な共通項目の設定を行います。
-	 * 
-	 * @param model モデル
-	 * @param editedForm 入力済みのフォーム情報
-	 */
-	private void setupCommonInfo(Model model, UserInfo userInfo) {
-		// エンティティのユーザー情報を UserEditForm と UserEditInfo にマッピングして Viewに渡す
-		model.addAttribute("userEditForm", mapper.map(userInfo, UserEditForm.class));
-		model.addAttribute("userEditInfo", mapper.map(userInfo, UserEditInfo.class));
-		
-		model.addAttribute("userStatusKindOptions", UserStatusKind.values());
-		model.addAttribute("authorityKindOptions", AuthorityKind.values());
-	}
-
 }

@@ -59,7 +59,7 @@ public class SignupConfirmController {
 		}
 
 		// ログインIDとワンタイムコードを使用して本登録可能な仮登録ユーザーが存在するか検索し本登録を行う
-		SignupConfirmStatus signupConfirmStatus = service.chkTentativeSignupUser(loginId, oneTimeCode);
+		SignupConfirmStatus signupConfirmStatus = service.updateUserAsSignupCompletion(loginId, oneTimeCode);
 
 		// 次画面にワンタイムコード認証結果の情報を渡す
 		String message = AppUtil.getMessage(messageSource, signupConfirmStatus.getMessageId());
