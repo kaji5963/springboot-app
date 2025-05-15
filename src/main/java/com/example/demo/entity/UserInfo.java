@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * ユーザー情報テーブル Entity
@@ -24,6 +25,7 @@ import lombok.Data;
 @Table(name = "user_info")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserInfo {
 
 	/** ログインID */
@@ -37,6 +39,11 @@ public class UserInfo {
 	/**メールアドレス */
 	@Column(name = "mail_address")
 	private String mailAddress;
+
+// TODO user_name入れるか？
+//	/** ユーザー名 */
+//	@Column(name = "user_name")
+//	private String userName;
 
 	/**ワンタイムコード */
 	@Column(name = "one_time_code")
@@ -63,7 +70,7 @@ public class UserInfo {
 	@Column(name = "authority")
 	@Convert(converter = UserAuthorityConverter.class)
 	private AuthorityKind authorityKind;
-	
+
 	/** 本登録完了有無（仮登録状態ならfalse） */
 	@Column(name = "is_signup_completed")
 	private boolean signupCompleted;
@@ -80,16 +87,14 @@ public class UserInfo {
 	@Column(name = "update_user")
 	private String updateUser;
 
-	public UserInfo() {
-	}
-
 	/**
 	 * ログイン失敗回数をインクリメントする
 	 * 
 	 * @return ログイン失敗回数がインクリメントされたUserInfo
 	 */
 	public UserInfo incrementLoginFailureCount() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, ++loginFailureCount,
+		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime,
+				++loginFailureCount,
 				accountLockedTime, userStatusKind, authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}
 
@@ -99,7 +104,8 @@ public class UserInfo {
 	 * @return ログイン失敗情報がリセットされたUserInfo
 	 */
 	public UserInfo resetLoginFailureInfo() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0, null, userStatusKind,
+		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0, null,
+				userStatusKind,
 				authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}
 
@@ -109,7 +115,8 @@ public class UserInfo {
 	 * @return ログイン失敗階位数、アカウントロック日時が更新されたUserInfo
 	 */
 	public UserInfo updateAccountLocked() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0, LocalDateTime.now(),
+		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0,
+				LocalDateTime.now(),
 				userStatusKind, authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}
 }
