@@ -40,10 +40,9 @@ public class UserInfo {
 	@Column(name = "mail_address")
 	private String mailAddress;
 
-// TODO user_name入れるか？
-//	/** ユーザー名 */
-//	@Column(name = "user_name")
-//	private String userName;
+	/** ユーザー名 */
+	@Column(name = "user_name")
+	private String userName;
 
 	/**ワンタイムコード */
 	@Column(name = "one_time_code")
@@ -93,7 +92,7 @@ public class UserInfo {
 	 * @return ログイン失敗回数がインクリメントされたUserInfo
 	 */
 	public UserInfo incrementLoginFailureCount() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime,
+		return new UserInfo(loginId, password, mailAddress, userName, oneTimeCode, oneTimeCodeSendTime,
 				++loginFailureCount,
 				accountLockedTime, userStatusKind, authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}
@@ -104,7 +103,7 @@ public class UserInfo {
 	 * @return ログイン失敗情報がリセットされたUserInfo
 	 */
 	public UserInfo resetLoginFailureInfo() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0, null,
+		return new UserInfo(loginId, password, mailAddress, userName, oneTimeCode, oneTimeCodeSendTime, 0, null,
 				userStatusKind,
 				authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}
@@ -115,7 +114,7 @@ public class UserInfo {
 	 * @return ログイン失敗階位数、アカウントロック日時が更新されたUserInfo
 	 */
 	public UserInfo updateAccountLocked() {
-		return new UserInfo(loginId, password, mailAddress, oneTimeCode, oneTimeCodeSendTime, 0,
+		return new UserInfo(loginId, password, mailAddress, userName, oneTimeCode, oneTimeCodeSendTime, 0,
 				LocalDateTime.now(),
 				userStatusKind, authorityKind, signupCompleted, createTime, updateTime, updateUser);
 	}

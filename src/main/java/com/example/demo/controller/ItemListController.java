@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.context.MessageSource;
 import org.springframework.core.Conventions;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.dto.ItemSearchInfo;
+import com.example.demo.dto.StaffInfo;
+import com.example.demo.entity.ItemInfo;
 import com.example.demo.form.ItemListForm;
 import com.example.demo.service.ItemListService;
 import com.example.demo.util.AppUtil;
@@ -54,7 +58,9 @@ public class ItemListController {
 	 */
 	@GetMapping(UrlConst.ITEM_LIST)
 	public String view(Model model, ItemListForm form) {
-		var userIdNames = service.obtainUserIdList();
+		// ユーザー情報テーブルを全件検索し、ユーザーIDとユーザー名の一覧を取得
+		List<StaffInfo> userIdNames = service.obtainUserIdList();
+		
 		model.addAttribute(KEY_USER_ID_OPTIONS, userIdNames);
 
 		return ViewNameConst.ITEM_LIST;
@@ -85,16 +91,19 @@ public class ItemListController {
 	//	}
 
 	/**
-	 * 検索条件に合致するユーザー情報を画面に表示します。
+	 * 検索条件に合致する商品情報を画面に表示します。
 	 * 
 	 * @param form 入力情報
 	 * @param redirectAttributes リダイレクト用オブジェクト
 	 * @return リダイレクトURL
 	 */
 	@PostMapping(value = UrlConst.ITEM_LIST, params = "search")
-	public String searchUser(ItemListForm form, RedirectAttributes redirectAttributes) {
-		var searchDto = mapper.map(form, ItemSearchInfo.class);
-		var itemInfos = service.editItemListByParam(searchDto);
+	public String searchItem(ItemListForm form, RedirectAttributes redirectAttributes) {
+		ItemSearchInfo searchDto = mapper.map(form, ItemSearchInfo.class);
+		
+		// 商品情報テーブルを条件検索した結果を取得
+		List<ItemInfo> itemInfos = service.editItemListByParam(searchDto);
+		
 		redirectAttributes.addFlashAttribute(KEY_ITEMLIST, itemInfos);
 		redirectAttributes.addFlashAttribute(Conventions.getVariableName(form), form);
 

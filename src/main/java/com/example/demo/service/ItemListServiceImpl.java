@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 商品一覧画面Service実装クラス
  * 
- * @author ys-fj
+ * @author kajiwara_takuya
  *
  */
 @Service
@@ -36,14 +36,18 @@ public class ItemListServiceImpl implements ItemListService {
 	 */
 	@Override
 	public List<StaffInfo> obtainUserIdList() {
-		var userInfos = userInfoRepository.findAll();
+		// ユーザー情報を全て取得
+		List<UserInfo> userInfos = userInfoRepository.findAll();
 
+		// StaffInfoリストを初期化（空のリストを作成）
 		List<StaffInfo> staffInfos = new ArrayList<>();
+		
 		for (UserInfo userInfo : userInfos) {
-			var staffInfo = new StaffInfo();
+			StaffInfo staffInfo = new StaffInfo();
+			
+			// ユーザーID、ユーザー名を格納し空リストへ追加
 			staffInfo.setUserId(userInfo.getLoginId());
-			// TODO user_name入れるか？
-//			staffInfo.setUserName(userInfo.getUserName());
+			staffInfo.setUserName(userInfo.getUserName());
 			staffInfos.add(staffInfo);
 		}
 
@@ -64,7 +68,5 @@ public class ItemListServiceImpl implements ItemListService {
 		} else {
 			return itemInfoRepository.findByItemNameLikeAndChargePerson(itemName, dto.getChargePerson());
 		}
-
 	}
-
 }
