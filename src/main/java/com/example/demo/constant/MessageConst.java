@@ -66,4 +66,10 @@ public class MessageConst {
 
 	/** ユーザー情報編集画面：ユーザー更新完了 */
 	public static final String USEREDIT_UPDATE_SUCCEED = "userEdit.updateSucceed";
+	
+	/** 商品登録画面：商品登録完了 */
+	public static final String ITEM_REGISTER_SUCCEED = "item.registerSucceed";
+	
+	/** 商品登録画面：商品登録失敗 */
+	public static final String ITEM_REGISTER_FAILED = "item.registerFailed";
 }

@@ -13,6 +13,13 @@
 	<div class="container-fluid">
 		<div th:insert="~{common/guideMessage :: guideMessage}"></div>
 		<h2 class="mt-3">商品一覧</h2>
+		
+		<form th:action="@{/itemRegister}" method="get" th:object="${ItemRegisterForm}">
+			<div class="form-group">
+				<p><input type="submit" name="create" class="btn btn-primary" value="商品登録">
+			</div>
+		</form>
+		
 		<div class="mt-3">
 			<span>＜絞り込み検索条件＞</span>
 		</div>

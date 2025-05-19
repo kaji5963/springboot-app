@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>商品登録画面</title>
+</head>
+
+<body>
+	<div th:insert="~{common/sourceList :: sourceList}"></div>
+	<div th:replace="~{common/messageIcon :: messageIcon}"></div>
+	<div class="container-fluid">
+		<h2>商品登録画面</h2>
+		<div th:insert="~{common/guideMessage :: guideMessage}"></div>
+		<form th:action="@{/itemRegister}" method="post" th:object="${itemRegisterForm}">
+			<div class="form-group">
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="itemId">商品ID：</label>
+						<input type="text" class="form-control" th:field="*{itemId}">
+						<span class="text-danger" th:if="${#fields.hasErrors('itemId')}" th:errors="*{itemId}"></span>
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="iitemName">商品名：</label>
+						<input type="text" class="form-control" th:field="*{itemName}">
+						<span class="text-danger" th:if="${#fields.hasErrors('itemName')}" th:errors="*{itemName}"></span>
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="price">単価：</label>
+						<input type="number" class="form-control" th:field="*{price}">
+						<span class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="mailAddress">入荷日：</label>
+						<input type="date" class="form-control" th:field="*{arrivalDate}">
+						<span class="text-danger" th:if="${#fields.hasErrors('arrivalDate')}" th:errors="*{arrivalDate}"></span>
+				</div>
+				<p><input type="submit" class="btn btn-primary" value="商品登録">
+			</div>
+		</form>
+		<a th:href="@{/itemList}">▶商品一覧画面へ戻る</a>
+	</div>
+</body>
+
+</html>
