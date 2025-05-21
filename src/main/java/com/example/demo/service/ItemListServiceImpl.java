@@ -2,10 +2,12 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.example.demo.constant.ItemDeleteResult;
 import com.example.demo.dto.ItemSearchInfo;
 import com.example.demo.dto.StaffInfo;
 import com.example.demo.entity.ItemInfo;
@@ -81,5 +83,24 @@ public class ItemListServiceImpl implements ItemListService {
 
 		// 全件検索
 		return itemInfoRepository.findAll();
+	}
+	
+	/**
+	 * 選択された商品IDから商品を削除します。
+	 * 
+	 * @param itemId 選択された商品ID
+	 */
+	public ItemDeleteResult deleteItemInfoById(String itemId) {
+		// 商品IDがDBに存在するか確認
+		Optional<ItemInfo> itemInfo = itemInfoRepository.findById(itemId);
+		
+		// 商品IDが存在しなかった場合
+		if (itemInfo.isEmpty()) {
+			return ItemDeleteResult.ERROR;
+		}
+		
+		itemInfoRepository.deleteById(itemId);
+		
+		return ItemDeleteResult.SUCCEED;
 	}
 }

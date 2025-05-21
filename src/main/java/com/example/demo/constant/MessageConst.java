@@ -72,4 +72,10 @@ public class MessageConst {
 	
 	/** 商品登録画面：商品登録失敗 */
 	public static final String ITEM_REGISTER_FAILED = "item.registerFailed";
+	
+	/** 商品一覧画面：商品削除完了 */
+	public static final String ITEM_ID_DELETE_SUCCEED = "itemId.deleteSucceed";
+
+	/** 商品一覧画面：存在しない商品ID */
+	public static final String NON_EXISTED_ITEM_ID = "nonExisted.itemId";
 }

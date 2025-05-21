@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.constant.ItemDeleteResult;
 import com.example.demo.dto.ItemSearchInfo;
 import com.example.demo.dto.StaffInfo;
 import com.example.demo.entity.ItemInfo;
@@ -28,4 +29,12 @@ public interface ItemListService {
 	 * @return 検索結果
 	 */
 	public List<ItemInfo> editItemListByParam(ItemSearchInfo dto);
+	
+	/**
+	 * 商品テーブルから指定された商品IDを削除します
+	 * 
+	 * @param itemId
+	 * @return 削除結果
+	 */
+	public ItemDeleteResult deleteItemInfoById(String itemId);
 }

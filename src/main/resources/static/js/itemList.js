@@ -30,8 +30,8 @@ function editSelectedLoginId(row) {
 	row.find('td').each(function() {
 		const columnId = $(this).attr('id');
 
-		if (columnId.startsWith('loginId_')) {
-			$('#selectedLoginId').val($(this).text());
+		if (columnId.startsWith('itemId_')) {
+			$('#selectedItemId').val($(this).text());
 			return false;
 		}
 	});

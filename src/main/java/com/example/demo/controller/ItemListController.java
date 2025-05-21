@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.constant.ItemDeleteResult;
+import com.example.demo.constant.ModelKey;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.dto.ItemSearchInfo;
@@ -112,16 +114,16 @@ public class ItemListController {
 	 * @return リダイレクトURL
 	 */
 	@PostMapping(value = UrlConst.ITEM_LIST, params = "delete")
-	public String deleteUser(ItemListForm form, RedirectAttributes redirectAttributes) {
-		// TODO 実装途中
-		//		var executeResult = service.deleteUserInfoById(form.getSelectedLoginId());
-		//		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, executeResult == UserDeleteResult.ERROR);
-		//		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
-		//				AppUtil.getMessage(messageSource, executeResult.getMessageId()));
-		//		// 削除後、フォーム情報の「選択されたログインID」は不要になるため、クリアします。
-		//		redirectAttributes.addFlashAttribute(KEY_USERLIST_FORM, form.clearSelectedLoginId());
-		//		redirectAttributes.addFlashAttribute(KEY_OPERATION_KIND, OperationKind.DELETE);
-		//
+	public String deleteItem(ItemListForm form, RedirectAttributes redirectAttributes) {
+		// 選択された商品IDから商品を削除
+		ItemDeleteResult result = service.deleteItemInfoById(form.getSelectedItemId());
+		
+		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, result == ItemDeleteResult.ERROR);
+		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
+				AppUtil.getMessage(messageSource, result.getMessageId()));
+		
+		//TODO: 削除後の挙動調整
+		
 		return AppUtil.doRedirect(UrlConst.ITEM_LIST);
 	}
 
