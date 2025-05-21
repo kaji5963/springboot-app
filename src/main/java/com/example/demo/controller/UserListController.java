@@ -76,8 +76,6 @@ public class UserListController {
 		// セッション情報を削除
 		session.removeAttribute(SessionKeyConst.SELECTED_LOGIN_ID);
 		
-		List<UserListInfo> userInfos = service.editUserList();
-		
 		model.addAttribute(KEY_USERLIST, editUserListInfo(model));
 		model.addAttribute(KEY_USER_STATUS_KIND_OPTIONS, UserStatusKind.values());
 		model.addAttribute(KEY_AUTHORITY_KIND_OPTIONS, AuthorityKind.values());

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.example.demo.dto.ItemSearchInfo;
 import com.example.demo.dto.StaffInfo;
@@ -12,7 +13,6 @@ import com.example.demo.entity.UserInfo;
 import com.example.demo.repository.ItemInfoRepository;
 import com.example.demo.repository.UserInfoRepository;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -41,10 +41,10 @@ public class ItemListServiceImpl implements ItemListService {
 
 		// StaffInfoリストを初期化（空のリストを作成）
 		List<StaffInfo> staffInfos = new ArrayList<>();
-		
+
 		for (UserInfo userInfo : userInfos) {
 			StaffInfo staffInfo = new StaffInfo();
-			
+
 			// ユーザーID、ユーザー名を格納し空リストへ追加
 			staffInfo.setUserId(userInfo.getLoginId());
 			staffInfo.setUserName(userInfo.getUserName());
@@ -59,14 +59,27 @@ public class ItemListServiceImpl implements ItemListService {
 	 */
 	@Override
 	public List<ItemInfo> editItemListByParam(ItemSearchInfo dto) {
-		// あいまい検索用の商品名
-		String itemName = "%" + dto.getItemName() + "%";
+		String itemName = dto.getItemName();
+		String chargePerson = dto.getChargePerson();
+		boolean hasItemName = StringUtils.hasText(itemName);
+		boolean hasChargePerson = StringUtils.hasText(chargePerson);
 
-		// 入荷担当者が選択されていない時
-		if (StringUtils.isEmpty(dto.getChargePerson())) {
-			return itemInfoRepository.findByItemNameLike(itemName);
-		} else {
-			return itemInfoRepository.findByItemNameLikeAndChargePerson(itemName, dto.getChargePerson());
+		// 商品名及び入荷担当者での検索
+		if (hasItemName && hasChargePerson) {
+			return itemInfoRepository.findByItemNameLikeAndChargePerson("%" + itemName + "%", chargePerson);
 		}
+
+		// 商品名での検索
+		if (hasItemName) {
+			return itemInfoRepository.findByItemNameLike("%" + itemName + "%");
+		}
+
+		// 入荷担当者での検索
+		if (hasChargePerson) {
+			return itemInfoRepository.findByChargePerson(chargePerson);
+		}
+
+		// 全件検索
+		return itemInfoRepository.findAll();
 	}
 }

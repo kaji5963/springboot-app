@@ -21,6 +21,8 @@ public interface ItemInfoRepository extends JpaRepository<ItemInfo, String> {
 	 * @return 検索でヒットした商品情報のリスト
 	 */
 	List<ItemInfo> findByItemNameLike(String itemName);
+	
+	List<ItemInfo> findByChargePerson(String itemName);
 
 	/**
 	 * 商品IDの部分一致検索、入荷担当者の検索を行います。

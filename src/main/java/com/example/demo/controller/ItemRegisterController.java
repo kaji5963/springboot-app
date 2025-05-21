@@ -19,7 +19,6 @@ import com.example.demo.service.ItemRegisterService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -39,9 +38,6 @@ public class ItemRegisterController {
 
 	/** オブジェクト間項目輸送クラス */
 	private final Mapper mapper;
-
-	/** セッションオブジェクト */
-	private final HttpSession session;
 
 	/** 画面で使用するフォームクラス名 */
 	private final String FORM_CLASS_NAME = "itemRegisterForm";

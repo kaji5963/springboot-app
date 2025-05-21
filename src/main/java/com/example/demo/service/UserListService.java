@@ -12,7 +12,7 @@ import com.example.demo.dto.UserSearchInfo;
  *  @author kajiwara_takuya
  */
 public interface UserListService {
-
+	
 	/**
 	 * ユーザー情報テーブルを全件検索し、ユーザー一覧画面に必要な情報へ変換して返却します。
 	 * 

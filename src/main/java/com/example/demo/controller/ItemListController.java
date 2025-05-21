@@ -58,37 +58,18 @@ public class ItemListController {
 	 */
 	@GetMapping(UrlConst.ITEM_LIST)
 	public String view(Model model, ItemListForm form) {
+		ItemSearchInfo searchDto = mapper.map(form, ItemSearchInfo.class);
+		// 商品情報テーブルを条件検索した結果を取得
+		List<ItemInfo> itemInfos = service.editItemListByParam(searchDto);
+
 		// ユーザー情報テーブルを全件検索し、ユーザーIDとユーザー名の一覧を取得
 		List<StaffInfo> userIdNames = service.obtainUserIdList();
-		
+
+		model.addAttribute(KEY_ITEMLIST, itemInfos);
 		model.addAttribute(KEY_USER_ID_OPTIONS, userIdNames);
 
 		return ViewNameConst.ITEM_LIST;
 	}
-
-	/**
-	 * 初期表示、検索後や削除後のリダイレクトによる再表示のいずれかかを判定して画面に表示する一覧情報を作成します。
-	 * 
-	 * @param model モデル
-	 * @return ユーザー一覧情報
-	 */
-	//	@SuppressWarnings("unchecked")
-	//	private List<UserListInfo> editUserListInfo(Model model) {
-	// TODO 実装途中
-	//		var doneSearchOrDelete = model.containsAttribute(KEY_OPERATION_KIND);
-	//		if (doneSearchOrDelete) {
-	//			var operationKind = (OperationKind) model.getAttribute(KEY_OPERATION_KIND);
-	//			if (operationKind == OperationKind.SEARCH) {
-	//				return (List<UserListInfo>) model.getAttribute(KEY_USERLIST);
-	//			}
-	//			if (operationKind == OperationKind.DELETE) {
-	//				var searchDto = mapper.map((UserListForm) model.getAttribute(KEY_USERLIST_FORM), UserSearchInfo.class);
-	//				return service.editUserListByParam(searchDto);
-	//			}
-	//		}
-	//
-	//		return service.editUserList();
-	//	}
 
 	/**
 	 * 検索条件に合致する商品情報を画面に表示します。
@@ -100,10 +81,10 @@ public class ItemListController {
 	@PostMapping(value = UrlConst.ITEM_LIST, params = "search")
 	public String searchItem(ItemListForm form, RedirectAttributes redirectAttributes) {
 		ItemSearchInfo searchDto = mapper.map(form, ItemSearchInfo.class);
-		
+
 		// 商品情報テーブルを条件検索した結果を取得
 		List<ItemInfo> itemInfos = service.editItemListByParam(searchDto);
-		
+
 		redirectAttributes.addFlashAttribute(KEY_ITEMLIST, itemInfos);
 		redirectAttributes.addFlashAttribute(Conventions.getVariableName(form), form);
 
