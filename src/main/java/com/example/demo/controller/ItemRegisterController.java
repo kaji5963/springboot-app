@@ -89,7 +89,6 @@ public class ItemRegisterController {
 					AppUtil.getMessage(messageSource, resultMessage.getMessageId()));
 			redirectAttributes.addAttribute(REDIRECT_PRAM_ERR, "");
 			
-			//TODO　おそらくここでバグっている
 			redirectAttributes.addFlashAttribute(FORM_CLASS_NAME, mapper.map(result.getItemInfo(), ItemRegisterForm.class));
 
 			return AppUtil.doRedirect(UrlConst.ITEM_REGISTER);
@@ -103,58 +102,4 @@ public class ItemRegisterController {
 		
 		return AppUtil.doRedirect(UrlConst.ITEM_REGISTER);
 	}
-
-	/**
-	 * 画面の入力情報からユーザー登録処理を呼び出します。
-	 * 
-	 * @param form 入力情報
-	 * @param bdResult 入力情報の単項目チェック結果
-	 * @param redirectAttributes リダイレクト用モデル
-	 * @return 表示画面
-	 */
-	//	@PostMapping(UrlConst.SIGNUP)
-	//	public String signup(@Validated SignupForm form, BindingResult bdResult, RedirectAttributes redirectAttributes) {
-	//		// バリデーションチェック
-	//		if (bdResult.hasErrors()) {
-	//			// プロパティファイルからメッセージを取得
-	//			editGuideMessage(form, bdResult, MessageConst.FORM_ERROR, redirectAttributes);
-	//			return AppUtil.doRedirect(UrlConst.SIGNUP);
-	//		}
-	//		
-	//		// form情報からユーザー情報を取得
-	//		SignupResult signupResult = service.signup(mapper.map(form, SignupInfo.class));
-	//		
-	//		// 送信処理がエラーかどうか
-	//		boolean isError = signupResult != SignupResult.SUCCEED;
-	//		
-	//		// エラーの場合の処理判定
-	//		if (isError) {
-	//			editGuideMessage(form, bdResult, signupResult.getMessageId(), redirectAttributes);
-	//			return AppUtil.doRedirect(UrlConst.SIGNUP);
-	//		}
-	//		
-	//		// ワンタイムパスワードで認証するログインIDをセッションへ格納
-	//		session.setAttribute(SessionKeyConst.ONE_TIME_AUTH_LOGIN_ID, form.getLoginId());
-	//		
-	//		return AppUtil.doRedirect(UrlConst.SIGNUP_CONFIRM);
-	//	}
-
-	/**
-	 * メッセージIDを使ってプロパティファイルからメッセージを取得し、画面に表示します。
-	 * 
-	 * <p>また、画面でメッセージを表示する際に通常メッセージとエラーメッセージとで色分けをするため、<br>
-	 * その判定に必要な情報も画面に渡します。
-	 * 
-	 * @param form 入力情報
-	 * @param bdResult 入力内容の単項目チェック結果
-	 * @param messageId プロパティファイルから取得したいメッセージのID
-	 * @param redirectAttributes リダイレクト用モデル
-	 */
-	//	private void editGuideMessage(SignupForm form, BindingResult bdResult, String messageId,
-	//			RedirectAttributes redirectAttributes) {
-	//		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE, AppUtil.getMessage(messageSource, messageId));
-	//		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, true);
-	//		redirectAttributes.addFlashAttribute(form);
-	//		redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + FORM_CLASS_NAME, bdResult);
-	//	}
 }
