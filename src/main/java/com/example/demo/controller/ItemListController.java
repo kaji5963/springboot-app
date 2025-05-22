@@ -43,7 +43,10 @@ public class ItemListController {
 	/** メッセージソース */
 	private final MessageSource messageSource;
 
-	/** モデルキー：ユーザー情報リスト */
+	/** モデルキー：商品情報リスト */
+	private static final String KEY_ITEMLIST_FORM = "itemListForm";
+
+	/** モデルキー：商品情報リスト */
 	private static final String KEY_ITEMLIST = "itemList";
 
 	/** モデルキー：ユーザーIDリスト */
@@ -94,7 +97,7 @@ public class ItemListController {
 	}
 
 	/**
-	 * 選択行のユーザー情報を削除して、最新情報で画面を再表示します。
+	 * 選択行の商品情報を編集して、最新情報で画面を再表示します。
 	 * 
 	 * @param form 入力情報
 	 * @return リダイレクトURL
@@ -107,7 +110,7 @@ public class ItemListController {
 	}
 
 	/**
-	 * 選択行のユーザー情報を削除して、最新情報で画面を再表示します。
+	 * 選択行の商品情報を削除して、最新情報で画面を再表示します。
 	 * 
 	 * @param form 入力情報
 	 * @param redirectAttributes リダイレクト用オブジェクト
@@ -117,22 +120,14 @@ public class ItemListController {
 	public String deleteItem(ItemListForm form, RedirectAttributes redirectAttributes) {
 		// 選択された商品IDから商品を削除
 		ItemDeleteResult result = service.deleteItemInfoById(form.getSelectedItemId());
-		
+
 		redirectAttributes.addFlashAttribute(ModelKey.IS_ERROR, result == ItemDeleteResult.ERROR);
 		redirectAttributes.addFlashAttribute(ModelKey.MESSAGE,
 				AppUtil.getMessage(messageSource, result.getMessageId()));
-		
-		//TODO: 削除後の挙動調整
-		
-		return AppUtil.doRedirect(UrlConst.ITEM_LIST);
-	}
 
-	/**
-	 * 操作種別Enum
-	 * 
-	 * @author ys-fj
-	 */
-	public enum OperationKind {
-		SEARCH, DELETE
+		// 削除後、フォーム情報の「選択された商品ID」は不要なためクリア
+		redirectAttributes.addFlashAttribute(KEY_ITEMLIST_FORM, form.clearSelectedItemId());
+
+		return AppUtil.doRedirect(UrlConst.ITEM_LIST);
 	}
 }
