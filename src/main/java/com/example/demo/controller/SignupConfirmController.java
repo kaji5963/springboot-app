@@ -11,7 +11,7 @@ import com.example.demo.constant.SessionKeyConst;
 import com.example.demo.constant.SignupConfirmStatus;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
-import com.example.demo.service.SignupConfirmService;
+import com.example.demo.service.signup.SignupConfirmService;
 import com.example.demo.util.AppUtil;
 
 import jakarta.servlet.http.HttpSession;

@@ -19,7 +19,7 @@ import com.example.demo.constant.db.UserStatusKind;
 import com.example.demo.dto.UserListInfo;
 import com.example.demo.dto.UserSearchInfo;
 import com.example.demo.form.UserListForm;
-import com.example.demo.service.UserListService;
+import com.example.demo.service.user.UserListService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 

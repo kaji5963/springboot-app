@@ -1,5 +1,5 @@
 
-package com.example.demo.service;
+package com.example.demo.service.item;
 
 import com.example.demo.dto.ItemRegisterResult;
 import com.example.demo.form.ItemRegisterForm;

@@ -17,7 +17,7 @@ import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.dto.SignupInfo;
 import com.example.demo.form.SignupForm;
-import com.example.demo.service.SignupService;
+import com.example.demo.service.signup.SignupService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 

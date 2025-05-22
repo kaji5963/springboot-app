@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>商品編集</title>
+</head>
+
+<body>
+	<div th:insert="~{common/sourceList :: sourceList}"></div>
+	<div th:replace="~{common/header :: header}"></div>
+	<div th:replace="~{common/messageIcon :: messageIcon}"></div>
+	<script type="text/javascript" th:src="@{/js/itemList.js}"></script>
+	<div class="container-fluid">
+		<div th:insert="~{common/guideMessage :: guideMessage}"></div>
+		<h2 class="mt-3">商品編集</h2>
+		<form th:action="@{/itemEdit}" method="post" th:object="${itemEditForm}">
+			<div class="form-group">
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="itemId">商品ID：</label>
+						<input type="text" class="form-control" th:field="*{itemId}">
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="iitemName">商品名：</label>
+						<input type="text" class="form-control" th:field="*{itemName}">
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="price">単価：</label>
+						<input type="number" class="form-control" th:field="*{price}">
+				</div>
+				<div class="col-9 col-md-6 col-xxl-3">
+					<p><label for="arrivalDate">入荷日：</label>
+						<input type="date" class="form-control" th:field="*{arrivalDate}">
+				</div>
+				<p><input type="submit" class="btn btn-primary" value="商品編集">
+			</div>
+		</form>
+	</div>
+</body>
+</html>

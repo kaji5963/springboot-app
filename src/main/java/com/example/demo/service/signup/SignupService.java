@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.signup;
 
 import com.example.demo.constant.SignupResult;
 import com.example.demo.dto.SignupInfo;

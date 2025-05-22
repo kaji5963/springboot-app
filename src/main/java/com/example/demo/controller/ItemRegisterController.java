@@ -15,7 +15,7 @@ import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.dto.ItemRegisterResult;
 import com.example.demo.form.ItemRegisterForm;
-import com.example.demo.service.ItemRegisterService;
+import com.example.demo.service.item.ItemRegisterService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 

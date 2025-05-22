@@ -1,5 +1,5 @@
 
-package com.example.demo.service;
+package com.example.demo.service.signup;
 
 import com.example.demo.constant.SignupConfirmStatus;
 

@@ -12,16 +12,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.constant.ItemDeleteResult;
 import com.example.demo.constant.ModelKey;
+import com.example.demo.constant.SessionKeyConst;
 import com.example.demo.constant.UrlConst;
 import com.example.demo.constant.ViewNameConst;
 import com.example.demo.dto.ItemSearchInfo;
 import com.example.demo.dto.StaffInfo;
 import com.example.demo.entity.ItemInfo;
 import com.example.demo.form.ItemListForm;
-import com.example.demo.service.ItemListService;
+import com.example.demo.service.item.ItemListService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,6 +38,9 @@ public class ItemListController {
 
 	/** 商品一覧画面Serviceクラス */
 	private final ItemListService service;
+
+	/** セッションオブジェクト */
+	private final HttpSession session;
 
 	/** Dozer Mapper */
 	private final Mapper mapper;
@@ -97,16 +102,16 @@ public class ItemListController {
 	}
 
 	/**
-	 * 選択行の商品情報を編集して、最新情報で画面を再表示します。
+	 * 選択行の商品情報をして、最新情報で画面を再表示します。
 	 * 
 	 * @param form 入力情報
 	 * @return リダイレクトURL
 	 */
 	@PostMapping(value = UrlConst.ITEM_LIST, params = "edit")
 	public String updateUser(ItemListForm form) {
-		// TODO 実装途中
-		//		session.setAttribute(SessionKeyConst.SELECETED_LOGIN_ID, form.getSelectedLoginId());
-		return AppUtil.doRedirect(UrlConst.ITEM_LIST);
+		session.setAttribute(SessionKeyConst.SELECTED_ITEM_ID, form.getSelectedItemId());
+		
+		return AppUtil.doRedirect(UrlConst.ITEM_EDIT);
 	}
 
 	/**

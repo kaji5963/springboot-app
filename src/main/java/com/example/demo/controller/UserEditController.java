@@ -24,7 +24,7 @@ import com.example.demo.dto.UserEditResult;
 import com.example.demo.dto.UserUpdateInfo;
 import com.example.demo.entity.UserInfo;
 import com.example.demo.form.UserEditForm;
-import com.example.demo.service.UserEditService;
+import com.example.demo.service.user.UserEditService;
 import com.example.demo.util.AppUtil;
 import com.github.dozermapper.core.Mapper;
 
